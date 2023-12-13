@@ -7,8 +7,7 @@ if (-not (Test-Path (Join-Path $env:ProgramFiles 'Amazon\AWSCLI\aws.exe'))){
 }
 
 # Check AWS CLI version
-$awsVersion = aws --version
-
+$awsVersion = Start-Process -Wait -NoNewWindow -PassThru -FilePath aws -ArgumentList "--version" | Out-String
 Write-Output "AWS CLI installed. Version: $awsVersion"
 
 # Parameters - Instance ID, Base AMI Name, and Description
