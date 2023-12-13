@@ -10,11 +10,12 @@ param (
 )
 
 # Set dummy AWS credentials using 'aws configure'
-$null = Set-AWSCredential -AccessKey 'AKIAY7SEYN2PAKWIB7MX' -SecretKey 'hbzGl96S+KRip53HEgN6ib5icbocvPSvVmsNr21z' -StoreAs 'aws_kaku_profile'
+aws configure set aws_access_key_id "AKIAY7SEYN2PAKWIB7MX" --profile kaku_aws
+aws configure set aws_secret_access_key "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" --profile kaku_aws
+aws configure set default.region "us-east-2" --profile kaku_aws 
 
 # Set the AWS profile for this session
-$env:AWS_PROFILE = 'aws_kaku_profile'
-$env:AWS_DEFAULT_REGION = 'us-east-2'
+$env:AWS_PROFILE = 'kaku_aws'
 
 $awsCLIInstallerPath = "$env:TEMP\AWSCLIInstaller.msi"
 $awsExecutable = Join-Path $env:ProgramFiles 'Amazon\AWSCLIV2\aws.exe'
