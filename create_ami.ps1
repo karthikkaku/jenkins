@@ -37,6 +37,18 @@ if (-not (Test-Path $awsExecutable)) {
 # Check AWS CLI version
 $awsVersion = & $awsExecutable --version
 
+$awsProfile = "kaku_profile"
+$awsAccessKey = "AKIAY7SEYN2PAKWIB7MX"
+$awsSecretKey = "hbzGl96S+KRip53HEgN6ib5icbocvPSvVmsNr21z"
+$awsDefaultRegion = "us-east-2"  # Replace with your desired default region
+
+# Configure AWS credentials for the specified profile
+aws configure set aws_access_key_id $awsAccessKey --profile $awsProfile
+aws configure set aws_secret_access_key $awsSecretKey --profile $awsProfile
+aws configure set default.region $awsDefaultRegion --profile $awsProfile
+
+
+
 Write-Output "AWS CLI installed. Version: $awsVersion"
 
 Write-Output "$InstanceID $BaseAMIName $Description"
