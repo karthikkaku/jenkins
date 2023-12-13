@@ -8,6 +8,14 @@ param (
     [Parameter(Mandatory = $true)]
     [string]$Description
 )
+
+# Set dummy AWS credentials using 'aws configure'
+$null = Set-AWSCredential -AccessKey 'AKIAY7SEYN2PAKWIB7MX' -SecretKey 'hbzGl96S+KRip53HEgN6ib5icbocvPSvVmsNr21z' -StoreAs 'aws_kaku_profile'
+
+# Set the AWS profile for this session
+$env:AWS_PROFILE = 'aws_kaku_profile'
+$env:AWS_DEFAULT_REGION = 'us-east-2'
+
 $awsCLIInstallerPath = "$env:TEMP\AWSCLIInstaller.msi"
 $awsExecutable = Join-Path $env:ProgramFiles 'Amazon\AWSCLIV2\aws.exe'
 
