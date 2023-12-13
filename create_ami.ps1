@@ -1,8 +1,8 @@
-# Check if AWS CLI is available
 $awsCLIInstallerPath = "$env:TEMP\AWSCLIInstaller.msi"
+$awsExecutable = Join-Path $env:ProgramFiles 'Amazon\AWSCLI\aws.exe'
 
-# Check if AWS CLI is already installed
-if (-not (Test-Path (Join-Path $env:ProgramFiles 'Amazon\AWSCLI\aws.exe'))){
+# Check if AWS CLI is already installed or install it if not found
+if (-not (Test-Path $awsExecutable)) {
     Write-Output "AWS CLI not found. Installing AWS CLI..."
 
     # Download AWS CLI installer MSI
@@ -12,7 +12,7 @@ if (-not (Test-Path (Join-Path $env:ProgramFiles 'Amazon\AWSCLI\aws.exe'))){
     Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", $awsCLIInstallerPath, "/qn" -Wait
 
     # Validate installation
-    if (Test-Path (Join-Path $env:ProgramFiles 'Amazon\AWSCLI\aws.exe')) {
+    if (Test-Path $awsExecutable) {
         Write-Output "AWS CLI installed successfully."
     } else {
         Write-Output "Failed to install AWS CLI."
