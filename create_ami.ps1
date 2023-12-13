@@ -33,6 +33,9 @@ $InstanceID = $args[0]
 $BaseAMIName = $args[1]
 $Description = $args[2]
 
+Write-Output "$InstanceID $BaseAMIName $Description"
+
+
 # Generate a unique timestamp
 $Timestamp = Get-Date -Format "yyyyMMddHHmmss"
 
