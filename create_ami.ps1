@@ -28,10 +28,16 @@ $awsVersion = & $awsExecutable --version
 
 Write-Output "AWS CLI installed. Version: $awsVersion"
 
-# Parameters - Instance ID, Base AMI Name, and Description
-$InstanceID = $args[0]
-$BaseAMIName = $args[1]
-$Description = $args[2]
+param (
+    [Parameter(Mandatory = $true)]
+    [string]$InstanceID,
+
+    [Parameter(Mandatory = $true)]
+    [string]$BaseAMIName,
+
+    [Parameter(Mandatory = $true)]
+    [string]$Description
+)
 
 Write-Output "$InstanceID $BaseAMIName $Description"
 
