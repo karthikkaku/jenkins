@@ -37,6 +37,10 @@ if (-not (Test-Path $awsExecutable)) {
 # Check AWS CLI version
 $awsVersion = & $awsExecutable --version
 
+aws configure set aws_access_key_id "AKIAY7SEYN2PAKWIB7MX"
+aws configure set aws_secret_access_key "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"
+aws configure set default.region "us-east-2"
+
 Write-Output "AWS CLI installed. Version: $awsVersion"
 
 Write-Output "$InstanceID $BaseAMIName $Description"
