@@ -16,18 +16,15 @@ function Install-AWSCLI {
 }
 
 # Check if AWS CLI is available
-if (-not (Get-Command "aws" -ErrorAction SilentlyContinue)) {
-    # AWS CLI not found, installing AWS CLI
-    Write-Output "AWS CLI not found. Installing AWS CLI..."
-    
-    # Download and install AWS CLI
-    $AWSInstallerPath = "$env:TEMP\AWSCLI.msi"
-    Invoke-WebRequest -Uri "https://awscli.amazonaws.com/AWSCLIV2.msi" -OutFile $AWSInstallerPath
-    Start-Process msiexec -ArgumentList "/i", $AWSInstallerPath, "/qn" -Wait
+$awsExecutable = "C:\Program Files\Amazon\AWSCLI\aws.exe"
+if (-not (Test-Path $awsExecutable)) {
+    # AWS CLI not found, installing AWS CLI or use the correct path if installed elsewhere
+    Write-Output "AWS CLI not found. Please install AWS CLI or provide the correct path."
+    exit 1  # Exit the script with an error code
 }
 
 # Check AWS CLI version
-$awsVersion = aws --version
+$awsVersion = & $awsExecutable --version
 
 Write-Output "AWS CLI installed. Version: $awsVersion"
 
