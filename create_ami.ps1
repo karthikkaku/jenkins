@@ -1,5 +1,5 @@
 $awsCLIInstallerPath = "$env:TEMP\AWSCLIInstaller.msi"
-$awsExecutable = Join-Path $env:ProgramFiles 'Amazon\AWSCLI\aws.exe'
+$awsExecutable = Join-Path $env:ProgramFiles 'Amazon\AWSCLIV2\aws.exe'
 
 # Check if AWS CLI is already installed or install it if not found
 if (-not (Test-Path $awsExecutable)) {
