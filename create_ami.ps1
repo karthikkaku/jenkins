@@ -39,15 +39,6 @@ $awsVersion = & $awsExecutable --version
 
 Write-Output "AWS CLI installed. Version: $awsVersion"
 
-# Set dummy AWS credentials using 'aws configure'
-aws configure set aws_access_key_id "AKIAY7SEYN2PAKWIB7MX" --profile kaku_aws
-aws configure set aws_secret_access_key "hbzGl96S+KRip53HEgN6ib5icbocvPSvVmsNr21z" --profile kaku_aws
-aws configure set default.region "us-east-2" --profile kaku_aws 
-
-# Set the AWS profile for this session
-$env:AWS_PROFILE = 'kaku_aws'
-
-
 Write-Output "$InstanceID $BaseAMIName $Description"
 
 
