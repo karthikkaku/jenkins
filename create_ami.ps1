@@ -1,3 +1,13 @@
+param (
+    [Parameter(Mandatory = $true)]
+    [string]$InstanceID,
+
+    [Parameter(Mandatory = $true)]
+    [string]$BaseAMIName,
+
+    [Parameter(Mandatory = $true)]
+    [string]$Description
+)
 $awsCLIInstallerPath = "$env:TEMP\AWSCLIInstaller.msi"
 $awsExecutable = Join-Path $env:ProgramFiles 'Amazon\AWSCLIV2\aws.exe'
 
@@ -28,16 +38,7 @@ $awsVersion = & $awsExecutable --version
 
 Write-Output "AWS CLI installed. Version: $awsVersion"
 
-param (
-    [Parameter(Mandatory = $true)]
-    [string]$InstanceID,
 
-    [Parameter(Mandatory = $true)]
-    [string]$BaseAMIName,
-
-    [Parameter(Mandatory = $true)]
-    [string]$Description
-)
 
 Write-Output "$InstanceID $BaseAMIName $Description"
 
