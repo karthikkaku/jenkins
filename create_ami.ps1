@@ -1,9 +1,26 @@
 # Check if AWS CLI is available
-$awsExecutable = "C:\Program Files\Amazon\AWSCLI\aws.exe"
-if (-not (Test-Path $awsExecutable)) {
-    # AWS CLI not found, installing AWS CLI or use the correct path if installed elsewhere
-    Write-Output "AWS CLI not found. Please install AWS CLI or provide the correct path."
-    exit 1  # Exit the script with an error code
+# Path for AWS CLI installation
+$awsCLIInstallerPath = "$env:TEMP\AWSCLIInstaller.msi"
+
+# Check if AWS CLI is already installed
+if (-not (Test-Path (Join-Path $env:ProgramFiles 'Amazon\AWSCLI\aws.exe'))) {
+    Write-Output "AWS CLI not found. Installing AWS CLI..."
+
+    # Download AWS CLI installer MSI
+    Invoke-WebRequest -Uri "https://awscli.amazonaws.com/AWSCLIV2.msi" -OutFile $awsCLIInstallerPath
+
+    # Install AWS CLI silently
+    Start-Process -FilePath "msiexec.exe" -ArgumentList "/i", $awsCLIInstallerPath, "/qn" -Wait
+
+    # Validate installation
+    if (Test-Path (Join-Path $env:ProgramFiles 'Amazon\AWSCLI\aws.exe'))) {
+        Write-Output "AWS CLI installed successfully."
+    } else {
+        Write-Output "Failed to install AWS CLI."
+        exit 1  # Exit the script with an error code
+    }
+} else {
+    Write-Output "AWS CLI already installed."
 }
 
 # Check AWS CLI version
@@ -30,16 +47,10 @@ $AMIId = & $awsExecutable ec2 create-image --instance-id $InstanceID --name $AMI
 
 Write-Output "Creating AMI with ID: $AMIId and name: $AMIName"
 
-# Wait for the AMI creation to complete using the AWS CLI
-# ...
-
 # Slack notification integration using AWS CLI
 if ($amiStatus -eq "available") {
     Write-Output "AMI creation completed. AMI ID: $AMIId"
     $text = "$AMIId AMI Created Successfully"
-
-    # Send a notification to Slack using AWS CLI
-    & $awsExecutable lambda invoke --function-name "slackNotificationLambdaFunction" --payload "{ \"text\": \"$text\" }" --region us-east-1
 } else {
     Write-Output "AMI creation failed or timed out."
 }
