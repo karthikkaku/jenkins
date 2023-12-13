@@ -1,13 +1,28 @@
-# Check if AWS CLI is installed
-if (-not (Test-Path (Join-Path $env:ProgramFiles 'Amazon\AWSCLI\aws.exe'))){
-    # AWS CLI not found, installing AWS CLI
+# Function to check if AWS CLI is installed
+function Check-AWSCLIInstallation {
+    return (Test-Path (Join-Path $env:ProgramFiles 'Amazon\AWSCLI\aws.exe'))
+}
+
+# Function to install AWS CLI
+function Install-AWSCLI {
     Write-Output "AWS CLI not found. Installing AWS CLI..."
-    Invoke-WebRequest -Uri "https://awscli.amazonaws.com/AWSCLIV2.msi" -OutFile "$env:TEMP\AWSCLIV2.msi"
-    Start-Process -Wait -FilePath msiexec -ArgumentList "/i $env:TEMP\AWSCLIV2.msi /qn" -NoNewWindow
+
+    # Download AWS CLI installer
+    $awsCLIInstaller = "$env:TEMP\AWSCLIV2.exe"
+    Invoke-WebRequest -Uri "https://awscli.amazonaws.com/AWSCLIV2.exe" -OutFile $awsCLIInstaller
+
+    # Run AWS CLI installer silently
+    Start-Process -Wait -FilePath $awsCLIInstaller -ArgumentList "/S" -NoNewWindow
+}
+
+# Check if AWS CLI is installed
+if (-not (Check-AWSCLIInstallation)) {
+    Install-AWSCLI
 }
 
 # Check AWS CLI version
-$awsVersion = Start-Process -Wait -NoNewWindow -PassThru -FilePath aws -ArgumentList "--version" | Out-String
+$awsVersion = aws --version
+
 Write-Output "AWS CLI installed. Version: $awsVersion"
 
 # Parameters - Instance ID, Base AMI Name, and Description
@@ -27,6 +42,8 @@ $Timestamp = Get-Date -Format "yyyyMMddHHmmss"
 
 # Create a unique AMI name by appending the timestamp to the base AMI name
 $AMIName = "${BaseAMIName}_${Timestamp}"
+
+# Rest of your script to handle AMI creation and Slack notification
 # Check if an AMI with the specified name already exists
 $existingAmi = aws ec2 describe-images --owners self --filters "Name=name,Values=$AMIName" --query 'Images[*].ImageId' --output text
 
