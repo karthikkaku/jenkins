@@ -10,8 +10,8 @@
 )
 
 #credentials to connect aws
-$accessKey = "AKIAY7SEYN2PAKWIB7MX"
-$secretKey = "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    "
+$accessKey = "AKIAY7SEYN2PFTKTB67I"
+$secretKey = "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"
 
 
 Set-AWSCredential -AccessKey $accessKey -SecretKey $secretKey
