@@ -7,9 +7,9 @@ $password = "admin123"
 $NewAMIId = Get-Content -Path "result.txt" -Raw 
 
 # Construct the SQL update query
-$updateSql = "UPDATE instance SET inst_id  = '$NewAMIId' WHERE ami_id = 1 ;"
+$updateSql = "UPDATE instance SET inst_id  = '$NewAMIId' WHERE ami_id = 1 ;" # change this to INSERT if you want to preserve data
 
-# Reference the MySQL .NET Connector assembly
+# Reference the MySQL .NET Connector assembly ( find the right code )
 
 # Create a database connection
 $connectionString = "Server=$server;Database=$database;User ID=$username;Password=$password;"
