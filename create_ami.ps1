@@ -12,9 +12,8 @@ Set-AWSCredential `
                  -AccessKey AKIAY7SEYN2PAKWIB7MX `
                  -SecretKey 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 `
                  -StoreAs MyNewProfile
+Set-AWSCredential -AccessKey $accessKey -SecretKey $secretKey
 Set-DefaultAWSRegion -Region us-east-2
-
-
 # Generate a unique timestamp
 $Timestamp = Get-Date -Format "yyyyMMddHHmmss"
 
