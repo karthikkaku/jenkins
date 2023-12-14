@@ -3,6 +3,8 @@
     [string]$NotificationText,
 )
 
+Write-Output "NotificationText - $NotificationText."
+
 if (-not [string]::IsNullOrEmpty($result)) {
     # Prepare JSON payload
     $body = @{
