@@ -3,6 +3,7 @@ $database = "rdsdemo"
 $username = "admin"
 $password = "admin123"
 
+
 # New AMI ID
 $NewAMIId = Get-Content -Path "result.txt" -Raw 
 
