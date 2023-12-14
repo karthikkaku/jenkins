@@ -63,7 +63,7 @@ if ($amiStatus -eq "available") {
 
     $NewAMIId = $AMIId
 
-    $updateSql = "UPDATE instance SET inst_id = '$NewAMIId' WHERE ami_id = 1;"
+    $updateSql = "UPDATE instance SET inst_id = '$AMIId' WHERE ami_id = 1;"
 
     $connectionString = "Server=$server;Database=$database;User ID=$username;Password=$password;"
     $connection = New-Object MySql.Data.MySqlClient.MySqlConnection
