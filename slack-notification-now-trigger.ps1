@@ -5,7 +5,7 @@
 
 Write-Output "NotificationText - $NotificationText."
 
-if (-not [string]::IsNullOrEmpty($result)) {
+if (-not [string]::IsNullOrEmpty($NotificationText)) {
     # Prepare JSON payload
     $body = @{
         text = "$NotificationText"
