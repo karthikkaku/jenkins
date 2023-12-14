@@ -8,9 +8,11 @@ param (
     [Parameter(Mandatory = $true)]
     [string]$Description
 )
-aws configure set aws_access_key_id "AKIAY7SEYN2PAKWIB7MX"
-aws configure set aws_secret_access_key "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"
-aws configure set default.region "us-east-2"
+Set-AWSCredential `
+                 -AccessKey AKIAY7SEYN2PAKWIB7MX `
+                 -SecretKey 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 `
+                 -StoreAs MyNewProfile
+Set-DefaultAWSRegion -Region us-east-2
 
 
 # Generate a unique timestamp
