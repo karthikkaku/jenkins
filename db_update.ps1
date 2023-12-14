@@ -9,23 +9,16 @@ param (
     [string]$Description
 )
 
-#credentials to connect AWS
+# Your AWS credentials
 $accessKey = "AKIAY7SEYN2PFTKTB67I"
 $secretKey = "KtC6oL4WOFqvOFOENHdwVx8yQkE4sg/F7JNPHzcc"
 
+# Set AWS credentials and region
 Set-AWSCredential -AccessKey $accessKey -SecretKey $secretKey
-Set-DefaultAWSRegion -Region us-east-2
+Set-DefaultAWSRegion -Region "us-east-2"
 
-# Import the AWSPowerShell module
-if (-not (Get-Module -Name AWSPowerShell -ErrorAction SilentlyContinue)) {
-    Install-Module -Name AWSPowerShell -Force -Verbose
-}
-Import-Module AWSPowerShell
-
-# Generate a unique timestamp
+# Generate a unique timestamp for the AMI name
 $Timestamp = Get-Date -Format "yyyyMMddHHmmss"
-
-# Create a unique AMI name by appending the timestamp to the base AMI name
 $AMIName = "${BaseAMIName}_${Timestamp}"
 
 # Check if an AMI with the specified name already exists
@@ -57,6 +50,8 @@ while ($amiStatus -eq "pending") {
 
 if ($amiStatus -eq "available") {
     Write-Output "AMI creation completed. AMI ID: $AMIId"
+    
+    # Write the AMI ID to result.txt
     $message = "AMI creation completed. AMI ID: $AMIId"
     Add-Content -Path "result.txt" -Value $message
 
@@ -67,6 +62,7 @@ if ($amiStatus -eq "available") {
     $password = "admin123"
 
     $NewAMIId = $AMIId
+
     $updateSql = "UPDATE instance SET inst_id = '$NewAMIId' WHERE ami_id = 1;"
 
     $connectionString = "Server=$server;Database=$database;User ID=$username;Password=$password;"
@@ -74,22 +70,28 @@ if ($amiStatus -eq "available") {
     $connection.ConnectionString = $connectionString
 
     $connection.Open()
+
     $command = $connection.CreateCommand()
     $command.CommandText = $updateSql
 
     $affectedRows = $command.ExecuteNonQuery()
+
     $connection.Close()
 
     if ($affectedRows -gt 0) {
         Write-Output "AMI ID updated in the database."
+
+        # Slack notification about AMI update in the database
+        $slackMessage = "AMI ID updated in the database. New AMI ID: $NewAMIId"
+        $slackBody = @{
+            text = $slackMessage
+        } | ConvertTo-Json
+
+        Invoke-RestMethod -Uri "https://hooks.slack.com/services/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" -Method Post -ContentType "application/json" -Body $slackBody
     } else {
         Write-Output "Update in the database failed."
     }
-
-    # Send a notification to Slack
-    $slackMessage = "AMI ID: $AMIId created and updated in the database."
-    $body = @{ text = $slackMessage } | ConvertTo-Json
-    Invoke-RestMethod -Uri "https://hooks.slack.com/services/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" -Method Post -ContentType "application/json" -Body $body
-} else {
+}
+else {
     Write-Output "AMI creation failed or timed out."
 }
