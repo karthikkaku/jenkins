@@ -1,4 +1,4 @@
-param (
+ param (
     [Parameter(Mandatory = $true)]
     [string]$InstanceID,
 
@@ -8,12 +8,21 @@ param (
     [Parameter(Mandatory = $true)]
     [string]$Description
 )
-Set-AWSCredential `
-                 -AccessKey AKIAY7SEYN2PAKWIB7MX `
-                 -SecretKey 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 `
-                 -StoreAs MyNewProfile
+
+#credentials to connect aws
+$accessKey = "AKIAY7SEYN2PAKWIB7MX"
+$secretKey = "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    "
+
+
 Set-AWSCredential -AccessKey $accessKey -SecretKey $secretKey
 Set-DefaultAWSRegion -Region us-east-2
+
+# Import the AWSPowerShell module
+if (-not (Get-Module -Name AWSPowerShell -ErrorAction SilentlyContinue)) {
+    Install-Module -Name AWSPowerShell -Force -Verbose
+}
+Import-Module AWSPowerShell
+
 # Generate a unique timestamp
 $Timestamp = Get-Date -Format "yyyyMMddHHmmss"
 
@@ -38,7 +47,6 @@ $AMIId = New-EC2Image @AMIParams
 
 Write-Output "Creating AMI with ID: $AMIId and name: $AMIName"
 
-
 # Wait for the AMI creation to complete
 Write-Output "Waiting for the AMI creation to complete..."
 $amiStatus = "pending"
@@ -50,6 +58,19 @@ while ($amiStatus -eq "pending") {
 
 if ($amiStatus -eq "available") {
     Write-Output "AMI creation completed. AMI ID: $AMIId"
+
+    # Construct the Slack message
+    $slackMessage = "AMI updated. New AMI ID: $AMIId"
+
+    # Slack API endpoint and message payload
+    $uri = "https://slack.com/api/chat.postMessage"
+    $headers = @{ "Authorization" = "Bearer YOUR_SLACK_API_TOKEN" }  # Replace with your Slack API token
+    $body = @{
+        text = $slackMessage
+    }
+
+    # Send a Slack notification using PowerShell equivalent of REST API call
+    Invoke-RestMethod -Uri $uri -Headers $headers -Method Post -ContentType "application/json" -Body ($body | ConvertTo-Json)
 } else {
     Write-Output "AMI creation failed or timed out."
 }
