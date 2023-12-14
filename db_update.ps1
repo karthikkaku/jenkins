@@ -56,7 +56,7 @@ if ($amiStatus -eq "available") {
     Add-Content -Path "result.txt" -Value $message
 
     # Update the database with the new AMI ID
-    $server = "database-1.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
+    $server = "rdsdemo.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
     $database = "rdsdemo"
     $username = "admin"
     $password = "admin123"
