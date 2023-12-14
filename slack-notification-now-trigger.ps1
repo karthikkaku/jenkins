@@ -12,7 +12,7 @@ if (-not [string]::IsNullOrEmpty($NotificationText)) {
     } | ConvertTo-Json
 
     # Send a POST request to the Slack webhook URL
-    Invoke-RestMethod -Uri "https://hooks.slack.com/services/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" -Method Post -ContentType "application/json" -Body $body
+    Invoke-RestMethod -Uri "https://hooks.slack.com/services/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" -Method Post -ContentType "application/json" -Body $body
 } else {
     Write-Output "The content of result.txt is empty or null."
 }
