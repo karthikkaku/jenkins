@@ -58,17 +58,6 @@ while ($amiStatus -eq "pending") {
 
 if ($amiStatus -eq "available") {
     Write-Output "AMI creation completed. AMI ID: $AMIId"
-    
-    # Construct the Slack message
-    $jsonData = @{
-    text = "AMI updated. New AMI ID: $AMIId"
-    } | ConvertTo-Json
-    
-    # Set the Slack webhook URL
-    $webhookUrl = "https://hooks.slack.com/services/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"
-    
-    # Send the POST request
-    Invoke-RestMethod -Uri $webhookUrl -Method Post -ContentType "application/json" -Body $jsonData
 } else {
     Write-Output "AMI creation failed or timed out."
 }
