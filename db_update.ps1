@@ -1,10 +1,10 @@
-$server = "mydb.cqsjd7auvq0d.us-east-2.rds.amazonaws.com"
+$server = "database-1.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
 $database = "rdsdemo"
 $username = "admin"
-$password = "admin1234"
+$password = "admin123"
 
 # New AMI ID
-$NewAMIId = "ami-06475fa81c3e0ecd6"  # Replace with the actual AMI ID you obtained
+$NewAMIId = Get-Content -Path "result.txt" -Raw 
 
 # Construct the SQL update query
 $updateSql = "UPDATE instance SET inst_id  = '$NewAMIId' WHERE ami_id = 1 ;"
