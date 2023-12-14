@@ -1,6 +1,6 @@
  param (
     [Parameter(Mandatory = $true)]
-    [string]$NotificationText,
+    [string]$NotificationText
 )
 
 Write-Output "NotificationText - $NotificationText."
