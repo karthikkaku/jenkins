@@ -35,7 +35,7 @@ param (
             text = $slackMessage
         } | ConvertTo-Json
 
-        Invoke-RestMethod -Uri "https://hooks.slack.com/services/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" -Method Post -ContentType "application/json" -Body $slackBody
+        Invoke-RestMethod -Uri "https://hooks.slack.com/services/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" -Method Post -ContentType "application/json" -Body $slackBody
     } else {
         Write-Output "Update in the database failed."
     }
