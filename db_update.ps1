@@ -57,7 +57,7 @@ if ($amiStatus -eq "available") {
 
     # Update the database with the new AMI ID
     $server = "rdsdemo.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
-    $database = "rdsdemo"
+    $database = "demo"
     $username = "admin"
     $password = "admin123"
 
