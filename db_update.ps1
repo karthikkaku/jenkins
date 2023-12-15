@@ -1,6 +1,6 @@
 param (
     [Parameter(Mandatory = $true)]
-    [string]$AMIId,
+    [string]$AMIId
 )
 
     # Update the database with the new AMI ID
@@ -35,7 +35,7 @@ param (
             text = $slackMessage
         } | ConvertTo-Json
 
-        Invoke-RestMethod -Uri "https://hooks.slack.com/services/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" -Method Post -ContentType "application/json" -Body $slackBody
+        Invoke-RestMethod -Uri "https://hooks.slack.com/services/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" -Method Post -ContentType "application/json" -Body $slackBody
     } else {
         Write-Output "Update in the database failed."
     }
