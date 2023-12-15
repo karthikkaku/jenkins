@@ -55,6 +55,10 @@ if ($amiStatus -eq "available") {
     $message = "AMI creation completed. AMI ID: $AMIId"
     Add-Content -Path "result.txt" -Value $message
 
+    # Reference the MySQL .NET Connector assembly
+    [Reflection.Assembly]::LoadFile("C:\Program Files (x86)\MySQL\MySQL Connector NET 8.2.0\MySql.Data.dll")
+
+
     # Update the database with the new AMI ID
     $server = "rdsdemo.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
     $database = "demo"
