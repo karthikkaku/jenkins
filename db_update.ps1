@@ -79,19 +79,15 @@ if ($amiStatus -eq "available") {
     $connection.Close()
 
     if ($affectedRows -gt 0) {
-        Write-Output "AMI ID updated in the database."
+    Write-Output "AMI ID updated in the database."
 
-        # Slack notification about AMI update in the database
-        $slackMessage = "AMI ID updated in the database. 
-        $slackBody = @{
-            text = $slackMessage
-        } | ConvertTo-Json
+    # Slack notification about AMI update in the database
+    $slackMessage = "AMI ID updated in the database."
+    $slackBody = @{
+        text = $slackMessage
+    } | ConvertTo-Json
 
-        Invoke-RestMethod -Uri "https://hooks.slack.com/services/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" -Method Post -ContentType "application/json" -Body $slackBody
-    } else {
-        Write-Output "Update in the database failed."
-    }
-}
-else {
-    Write-Output "AMI creation failed or timed out."
+    Invoke-RestMethod -Uri "https://hooks.slack.com/services/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" -Method Post -ContentType "application/json" -Body $slackBody
+} else {
+    Write-Output "Update in the database failed."
 }
