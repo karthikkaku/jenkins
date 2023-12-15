@@ -82,7 +82,7 @@ if ($amiStatus -eq "available") {
         Write-Output "AMI ID updated in the database."
 
         # Slack notification about AMI update in the database
-        $slackMessage = "AMI ID updated in the database. New AMI ID: $NewAMIId"
+        $slackMessage = "AMI ID updated in the database. 
         $slackBody = @{
             text = $slackMessage
         } | ConvertTo-Json
