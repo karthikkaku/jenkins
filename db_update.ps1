@@ -28,14 +28,6 @@ param (
 
     if ($affectedRows -gt 0) {
         Write-Output "AMI ID updated in the database."
-
-        # Slack notification about AMI update in the database
-        $slackMessage = "AMI ID updated in the database."
-        $slackBody = @{
-            text = $slackMessage
-        } | ConvertTo-Json
-
-        Invoke-RestMethod -Uri "https://hooks.slack.com/services/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" -Method Post -ContentType "application/json" -Body $slackBody
     } else {
         Write-Output "Update in the database failed."
     }
