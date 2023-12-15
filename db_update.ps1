@@ -12,6 +12,8 @@ param (
     $NewAMIId = $AMIId
 
     $updateSql = "UPDATE instance SET inst_id = '$AMIId' WHERE ami_id = 1;"
+    # Reference the MySQL .NET Connector assembly
+[Reflection.Assembly]::LoadFile("C:\Program Files (x86)\MySQL\MySQL Connector NET 8.2.0\MySql.Data.dll")
 
     $connectionString = "Server=$server;Database=$database;User ID=$username;Password=$password;"
     $connection = New-Object MySql.Data.MySqlClient.MySqlConnection
