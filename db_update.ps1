@@ -3,34 +3,44 @@ param (
     [string]$AMIId
 )
 
-$databaseName = "demo"
+# Replace these variables with your AWS RDS endpoint, database name, username, and password
+$server = "rdsdemo.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
+$database = "demo"
 $username = "admin"
 $password = "admin123"
-$server = "rdsdemo.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
-$region = "us-east-1"
 
-# Define the SQL query to perform operations on your RDS instance
+# Construct the SQL query
 $query = "UPDATE instance SET inst_id = '$AMIId' WHERE ami_id = 1;"
 
-# Set AWS credentials (replace with your own)
-$accessKey = "AKIAY7SEYN2PFTKTB67I"
-$secretKey = "KtC6oL4WOFqvOFOENHdwVx8yQkE4sg/F7JNPHzcc"
+# Build connection string
+$connectionString = "Server=$server;Database=$database;User ID=$username;Password=$password;"
 
-# Set AWS credentials and region
-Set-AWSCredential -AccessKey $accessKey -SecretKey $secretKey -StoreAs "default"
-Set-DefaultAWSRegion -Region $region
+# Create connection
+$connection = New-Object System.Data.SqlClient.SqlConnection
+$connection.ConnectionString = $connectionString
 
 try {
-    # Execute SQL query on RDS instance
-    $result = Invoke-RdsCommand -Region $region -DBInstanceIdentifier $dbInstanceIdentifier -Region $region -SelectSql $query -ProfileName "default"
+    # Open the connection
+    $connection.Open()
 
-    # Check if the query was successful
-    if ($result -ne $null) {
+    # Create command
+    $command = $connection.CreateCommand()
+    $command.CommandText = $query
+
+    # Execute the query
+    $result = $command.ExecuteReader()
+
+    # Check if the query was executed successfully
+    if ($result.HasRows) {
         Write-Output "SQL query executed successfully!"
-        # Process the $result variable if needed
+        # Process the result set if needed
     } else {
         Write-Output "SQL query returned no results."
     }
+
+    # Close the connection
+    $connection.Close()
 } catch {
     Write-Output "Error executing SQL query: $_"
+    $connection.Close()
 }
