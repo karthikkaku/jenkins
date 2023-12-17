@@ -3,32 +3,34 @@ param (
     [string]$AMIId
 )
 
-    # Update the database with the new AMI ID
-    $server = "rdsdemo.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
-    $database = "demo"
-    $username = "admin"
-    $password = "admin123"
+$databaseName = "demo"
+$username = "admin"
+$password = "admin123"
+$server = "rdsdemo.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
+$region = "us-east-1"
 
-    $NewAMIId = $AMIId
+# Define the SQL query to perform operations on your RDS instance
+$query = "UPDATE instance SET inst_id = '$AMIId' WHERE ami_id = 1;"
 
-    $updateSql = "UPDATE instance SET inst_id = '$AMIId' WHERE ami_id = 1;"
-    # Reference the MySQL .NET Connector assembly
+# Set AWS credentials (replace with your own)
+$accessKey = "AKIAY7SEYN2PFTKTB67I"
+$secretKey = "KtC6oL4WOFqvOFOENHdwVx8yQkE4sg/F7JNPHzcc"
 
-    $connectionString = "Server=$server;Database=$database;User ID=$username;Password=$password;"
-    $connection = New-Object MySql.Data.MySqlClient.MySqlConnection
-    $connection.ConnectionString = $connectionString
+# Set AWS credentials and region
+Set-AWSCredential -AccessKey $accessKey -SecretKey $secretKey
+Set-DefaultAWSRegion -Region $region
 
-    $connection.Open()
+try {
+    # Execute SQL query on RDS instance
+    $result = Invoke-RdsExecuteSql -DBClusterIdentifier $server -SecretArn "arn:aws:secretsmanager:$region:your-account-id:secret:your-secret" -Database $databaseName -Sql $query
 
-    $command = $connection.CreateCommand()
-    $command.CommandText = $updateSql
-
-    $affectedRows = $command.ExecuteNonQuery()
-
-    $connection.Close()
-
-    if ($affectedRows -gt 0) {
-        Write-Output "AMI ID updated in the database."
+    # Check if the query was successful
+    if ($result -ne $null) {
+        Write-Output "SQL query executed successfully!"
+        # Process the $result variable if needed
     } else {
-        Write-Output "Update in the database failed."
+        Write-Output "SQL query returned no results."
     }
+} catch {
+    Write-Output "Error executing SQL query: $_"
+}
