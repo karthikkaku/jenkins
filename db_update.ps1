@@ -17,12 +17,12 @@ $accessKey = "AKIAY7SEYN2PFTKTB67I"
 $secretKey = "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"
 
 # Set AWS credentials and region
-Set-AWSCredential -AccessKey $accessKey -SecretKey $secretKey
+Set-AWSCredential -AccessKey $accessKey -SecretKey $secretKey -StoreAs "default"
 Set-DefaultAWSRegion -Region $region
 
 try {
     # Execute SQL query on RDS instance
-    $result = Invoke-RdsExecuteSql -DBClusterIdentifier $server -SecretArn "arn:aws:secretsmanager:$region:your-account-id:secret:your-secret" -Database $databaseName -Sql $query
+    $result = Invoke-RdsCommand -Region $region -DBInstanceIdentifier $dbInstanceIdentifier -Region $region -SelectSql $query -ProfileName "default"
 
     # Check if the query was successful
     if ($result -ne $null) {
