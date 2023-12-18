@@ -58,8 +58,7 @@ while ($amiStatus -eq "pending") {
 
 if ($amiStatus -eq "available") {
     Write-Output "AMI creation completed. AMI ID: $AMIId"
-    $message = "$AMIId"
-    Add-Content -Path "result.txt" -Value $message
+    Add-Content -Path "result.txt" -Value $AMIId
 } else {
     Write-Output "AMI creation failed or timed out."
 }
