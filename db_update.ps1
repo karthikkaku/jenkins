@@ -15,9 +15,6 @@ $query = "UPDATE instance SET inst_id = '$AMIId';"
 # Build connection string
 $connectionString = "Server=$server;Database=$database;User ID=$username;Password=$password;"
 
-[Reflection.Assembly]::LoadFile("C:\Program Files (x86)\MySQL\MySQL Connector NET 8.2.0\MySql.Data.dll")
-
-
 # Create connection
 $connection = New-Object System.Data.SqlClient.SqlConnection
 $connection.ConnectionString = $connectionString
