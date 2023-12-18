@@ -6,42 +6,76 @@ param (
 # Replace these variables with your AWS RDS endpoint, database name, username, and password
 $server = "database-1.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
 $database = "demo"
+$tableToCheck = "ami"
 $username = "admin"
 $password = "admin123"
 
-# Construct the SQL query
-$query = "UPDATE instance SET inst_id = '$AMIId';"
-
 # Build connection string
-$connectionString = "Server=$server;Database=$database;User ID=$username;Password=$password;"
-[Reflection.Assembly]::LoadFile("C:\Program Files (x86)\MySQL\MySQL Connector NET 8.2.0\MySql.Data.dll")
-
-# Create connection
-$connection = New-Object System.Data.SqlClient.SqlConnection
-$connection.ConnectionString = $connectionString
+$connectionString = "Server=$server;Database=$database;Uid=$username;Pwd=$password;"
 
 try {
-    # Open the connection
+    # Load MySQL assembly
+    [System.Reflection.Assembly]::LoadFile("C:\Program Files (x86)\MySQL\MySQL Connector NET 8.2.0\MySql.Data.dll")
+
+    # Create connection
+    $connection = New-Object MySql.Data.MySqlClient.MySqlConnection
+    $connection.ConnectionString = $connectionString
+
     $connection.Open()
 
-    # Create command
+    # Check if the database exists
+    $checkDbQuery = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = @database;"
     $command = $connection.CreateCommand()
-    $command.CommandText = $query
+    $command.CommandText = $checkDbQuery
+    $command.Parameters.AddWithValue("@database", $database)
+    
+    $result = $command.ExecuteScalar()
+    if ($result -eq $null) {
+        Write-Output "Database '$database' does not exist. Creating..."
 
-    # Execute the query
-    $result = $command.ExecuteReader()
+        # Create the database if it doesn't exist
+        $createDbQuery = "CREATE DATABASE $database;"
+        $command.CommandText = $createDbQuery
+        $command.ExecuteNonQuery()
 
-    # Check if the query was executed successfully
-    if ($result.HasRows) {
-        Write-Output "SQL query executed successfully!"
-        # Process the result set if needed
+        Write-Output "Database '$database' created."
     } else {
-        Write-Output "SQL query returned no results."
+        Write-Output "Database '$database' exists."
+    }
+
+    # Check if the table exists
+    $checkTableQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = @database AND TABLE_NAME = @tableToCheck;"
+    $command.CommandText = $checkTableQuery
+    $command.Parameters.AddWithValue("@database", $database)
+    $command.Parameters.AddWithValue("@tableToCheck", $tableToCheck)
+
+    $tableResult = $command.ExecuteScalar()
+
+    if ($tableResult -eq $null) {
+        Write-Output "Table '$tableToCheck' does not exist in database '$database'. Creating..."
+        $createTableQuery = "CREATE TABLE $tableToCheck (
+            id INT PRIMARY KEY AUTO_INCREMENT,
+            column_name VARCHAR(255),
+            ami_id VARCHAR(100)
+        );"
+        $command.CommandText = $createTableQuery
+        $command.ExecuteNonQuery()
+
+        Write-Output "Table '$tableToCheck' created."
+    } else {
+        Write-Output "Table '$tableToCheck' exists in database '$database'. Inserting row..."
+
+        # Insert a row into the table
+        $insertQuery = "INSERT INTO $tableToCheck (column_name, ami_id) VALUES (@columnValue, @amiId);"
+        $command.CommandText = $insertQuery
+        $command.Parameters.AddWithValue("@columnValue", "some_value")
+        $command.Parameters.AddWithValue("@amiId", $AMIId)
+        $command.ExecuteNonQuery()
     }
 
     # Close the connection
     $connection.Close()
 } catch {
-    Write-Output "Error executing SQL query: $_"
+    Write-Output "Error: $_.Exception.Message"
     $connection.Close()
 }
