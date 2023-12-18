@@ -4,8 +4,8 @@ param (
 )
 
 # Replace these variables with your AWS RDS endpoint, database name, username, and password
-$server = "database-1.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
-$database = "demo"
+$server = "sqldb.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
+$database = "sqldb"
 $tableToCheck = "ami"
 $username = "admin"
 $password = "admin123"
@@ -36,6 +36,7 @@ try {
         # Create the database if it doesn't exist
         $createDbQuery = "CREATE DATABASE $database;"
         $command.CommandText = $createDbQuery
+        $command.Parameters.Clear()
         $command.ExecuteNonQuery()
 
         Write-Output "Database '$database' created."
@@ -46,6 +47,7 @@ try {
     # Check if the table exists
     $checkTableQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = @database AND TABLE_NAME = @tableToCheck;"
     $command.CommandText = $checkTableQuery
+    $command.Parameters.Clear() # Clear parameters before reuse
     $command.Parameters.AddWithValue("@database", $database)
     $command.Parameters.AddWithValue("@tableToCheck", $tableToCheck)
 
@@ -59,6 +61,7 @@ try {
             ami_id VARCHAR(100)
         );"
         $command.CommandText = $createTableQuery
+        $command.Parameters.Clear() # Clear parameters before reuse
         $command.ExecuteNonQuery()
 
         Write-Output "Table '$tableToCheck' created."
@@ -68,9 +71,26 @@ try {
         # Insert a row into the table
         $insertQuery = "INSERT INTO $tableToCheck (column_name, ami_id) VALUES (@columnValue, @amiId);"
         $command.CommandText = $insertQuery
+        $command.Parameters.Clear() # Clear parameters before reuse
         $command.Parameters.AddWithValue("@columnValue", "some_value")
         $command.Parameters.AddWithValue("@amiId", $AMIId)
         $command.ExecuteNonQuery()
+
+        Write-Output "Row inserted into table '$tableToCheck'."
+
+        # Retrieve the inserted data
+        $selectQuery = "SELECT * FROM $tableToCheck;"
+        $command.CommandText = $selectQuery
+        $command.Parameters.Clear() # Clear parameters before reuse
+
+        $dataAdapter = New-Object MySql.Data.MySqlClient.MySqlDataAdapter($command)
+        $dataTable = New-Object System.Data.DataTable
+        $dataAdapter.Fill($dataTable)
+
+        # Log the retrieved data
+        Write-Output "Data retrieved from table '$tableToCheck':"
+        $dataTable | Format-Table -AutoSize
+
     }
 
     # Close the connection
