@@ -8,7 +8,6 @@ $server = "database-1.clsi8fbjzmk6.us-east-1.rds.amazonaws.com"
 $database = "demo"
 $username = "admin"
 $password = "admin123"
-$AMIId = "sfdf"
 
 # Construct the SQL query
 $query = "UPDATE instance SET inst_id = '$AMIId';"
