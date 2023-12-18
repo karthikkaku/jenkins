@@ -78,19 +78,6 @@ try {
 
         Write-Output "Row inserted into table '$tableToCheck'."
 
-        # Retrieve the inserted data
-        $selectQuery = "SELECT * FROM $tableToCheck;"
-        $command.CommandText = $selectQuery
-        $command.Parameters.Clear() # Clear parameters before reuse
-
-        $dataAdapter = New-Object MySql.Data.MySqlClient.MySqlDataAdapter($command)
-        $dataTable = New-Object System.Data.DataTable
-        $dataAdapter.Fill($dataTable)
-
-        # Log the retrieved data
-        Write-Output "Data retrieved from table '$tableToCheck':"
-        $dataTable | Format-Table -AutoSize
-
     }
 
     # Close the connection
